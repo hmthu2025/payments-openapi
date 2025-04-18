@@ -1,0 +1,2099 @@
+openapi: 3.0.3
+info:
+  title: ZBD Payments API
+  version: 1.0.0
+  description: Comprehensive OpenAPI specification for ZBD's Payments APIs.
+paths:
+  /v0/gamertag/charges:
+    post:
+      summary: Create Charge
+      description: Generate a payment request for a ZBD User.
+      operationId: post_v0_gamertag_charges
+      tags:
+      - ZBD Gamertag
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  unit: msats
+                  status: CHARGE_PENDING
+                  amount: '15000'
+                  createdAt: '2023-03-14T19:40:13.880Z'
+                  internalId: test
+                  callbackUrl: https://my-website.ngrok.io/callback
+                  description: Requesting Charge for Gamertag
+                  invoiceRequest: lnbc10n1pjppnvapp5camc852ky0et9g46gyey9mnv5xgux6tnkkq5qc6cexrr65xw2j9sdps2fjhzat9wd6xjmn8yppksctjvajjqen0wgsywctdv4e8gct8cqzpgxqzjcsp5jgs84mxjwk8n9r7xmp7ulzycy7882f5m8zagk45s2qp23p7rprqq9qyyssq3ysvdsgg5qvx0nwtlz46hcrucs7m6nkvsffcze5nhes40hqrnnes3xjcq0a4wtpqvvrdqlyqy3sz5yhqh6944unan4d32py2azq38zgq4c5ysu
+                  invoiceExpiresAt: '2023-03-14T19:50:13.859Z'
+                  invoiceDescriptionHash: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Payment -> in millisatoshis
+                gamertag:
+                  type: string
+                  description: Destination ZBD Gamertag
+                description:
+                  type: string
+                  description: Note or comment for this Payment (visible to recipient)
+                expiresIn:
+                  type: number
+                  description: Time until Charge expiration -> in seconds
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+            example:
+              amount: string
+              gamertag: string
+              description: string
+              expiresIn: string
+              internalId: string
+              callbackUrl: string
+      security:
+      - apikeyAuth: []
+  /v0/charges:
+    post:
+      summary: Create Charge
+      description: Start receiving instant Bitcoin payments through the ZBD API.
+      operationId: post_v0_charges
+      tags:
+      - Lightning Charges
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                message: Successfully created Charge.
+                data:
+                  unit: msats
+                  amount: '10000'
+                  confirmedAt: null
+                  status: pending
+                  description: My Charge Description
+                  createdAt: '2020-05-09T15:09:05.765Z'
+                  expiresAt: '2020-05-09T15:14:05.618Z'
+                  id: 1907b0fe-789b-4e25-b18a-0c4c0f5cced7
+                  internalId: 11af01d092444a317cb33faa6b8304b8
+                  callbackUrl: https://your-website.com/callback
+                  invoice:
+                    request: lnbc100n1p0td3u3pp5z2ed9yjfrz0rgu0fzuc5cdwfu8dtjlgrfztz5uga8hakkjy2yzgsdpzf4ujqsmgv9exwefqg3jhxcmjd9c8g6t0dccqzpgxqzfvsp5q8z5mkghmuzrnusxdwtmls7x8vuy63j25rt4z55gj3s7340dv72q9qy9qsqz02rlmlzcvew3vk90c6l0369ewk7tkr2tx0yrk3qa235v07w6d3qeksk99wm7y8f8ug7zqy6yjudu4cs2f4umpey43cw7msyj7uqj2qq8x03te
+                    uri: lightning:lnbc100n1p0td3u3pp5z2ed9yjfrz0rgu0fzuc5cdwfu8dtjlgrfztz5uga8hakkjy2yzgsdpzf4ujqsmgv9exwefqg3jhxcmjd9c8g6t0dccqzpgxqzfvsp5q8z5mkghmuzrnusxdwtmls7x8vuy63j25rt4z55gj3s7340dv72q9qy9qsqz02rlmlzcvew3vk90c6l0369ewk7tkr2tx0yrk3qa235v07w6d3qeksk99wm7y8f8ug7zqy6yjudu4cs2f4umpey43cw7msyj7uqj2qq8x03te
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Charge -> in millisatoshis
+                description:
+                  type: string
+                  description: Note or comment for this Charge (visible to payer)
+                expiresIn:
+                  type: number
+                  description: Time until Charge expiration -> in seconds
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+                internalId:
+                  type: string
+                  description: Open metadata string property
+            example:
+              amount: string
+              description: string
+              expiresIn: string
+              callbackUrl: string
+              internalId: string
+      security:
+      - apikeyAuth: []
+  /v0/internal-transfer:
+    post:
+      summary: Initiate Internal Transfer
+      description: Performs a transfer of funds between two Projects.
+      operationId: post_v0_internal-transfer
+      tags:
+      - Internal Transfers
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: c8571a4c-3c34-47af-8ded-ebd476f519c1
+                  senderWalletId: b81fa874-ac60-4a08-84f2-0af79684c506
+                  receiverWalletId: b804ee02-ec0b-4fd4-b99f-1f2d3d0001a6
+                  userId: 2470d896-9dc8-4d49-b18c-a4e83263e76d
+                  sendTxId: f532db20-2cfa-41b0-8c00-40cfbe124b54
+                  receiveTxId: 4b4640e0-d8a2-4f1e-8973-d98196f79a88
+                  status: TRANSFER_STATUS_COMPLETED
+                  amount: '1000'
+                  createdAt: '2023-02-16T02:28:32.754Z'
+                  updatedAt: '2023-02-16T02:28:32.777Z'
+                message: Internal Transfer done.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount to be transferred -> in millisatoshis
+                receiverWalletId:
+                  type: string
+                  description: The Wallet ID of the recipient Project
+            example:
+              amount: string
+              receiverWalletId: string
+      security:
+      - apikeyAuth: []
+  /v0/ln-address/fetch-charge:
+    post:
+      summary: Create Charge
+      description: Generate a payment request for a Lightning Address.
+      operationId: post_v0_ln-address_fetch-charge
+      tags:
+      - Lightning Address
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  lnaddress: andre@zbd.gg
+                  amount: '15000'
+                  invoice:
+                    uri: lightning:lnbc100n1p3mtxc3pp5tz4srtee9c4gsvlcqa6azu60a2ak2fvrnk7jv52j6n0rzp0musnqhp5xt5ts9t74akf67j59ynkr5qz8x3hs4g09d3dttmjrwwdhrxgc03qcqzpgxqzfvsp5529t5y03yaakumqrm9cwr5t6nysnr5cv93pnvw089a25aa7wszas9qyyssqalswdlc92983203l5azl43nksehadfy2uahc9v6qwg67xs52z02hg6vh7alrm3yx46ywdrl3dxey75t9l2ekmuwc3tu4ug03dy729fspdld2lj
+                    request: lnbc100n1p3mtxc3pp5tz4srtee9c4gsvlcqa6azu60a2ak2fvrnk7jv52j6n0rzp0musnqhp5xt5ts9t74akf67j59ynkr5qz8x3hs4g09d3dttmjrwwdhrxgc03qcqzpgxqzfvsp5529t5y03yaakumqrm9cwr5t6nysnr5cv93pnvw089a25aa7wszas9qyyssqalswdlc92983203l5azl43nksehadfy2uahc9v6qwg67xs52z02hg6vh7alrm3yx46ywdrl3dxey75t9l2ekmuwc3tu4ug03dy729fspdld2lj
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lnaddress:
+                  type: string
+                  description: The Lightning Address of the intended recipient
+                amount:
+                  type: string
+                  description: The amount for the Charge -> in millisatoshis
+                description:
+                  type: string
+                  description: Note or comment of this Charge
+            example:
+              lnaddress: string
+              amount: string
+              description: string
+      security:
+      - apikeyAuth: []
+  /v0/static-charges:
+    post:
+      summary: Create Static Charge
+      description: Start accepting payments on Lightning with Static QR codes.
+      operationId: post_v0_static-charges
+      tags:
+      - Lightning Charges
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Successfully created Static Charge.
+                data:
+                  id: 45c225b1-022b-4a37-98d6-5a5568f78d11
+                  unit: msats
+                  slots: 0
+                  minAmount: '10000'
+                  maxAmount: '100000'
+                  createdAt: '2023-03-07T20:07:06.910Z'
+                  expiresAt: null
+                  internalId: myInternalId
+                  description: Static Charge API Ref
+                  callbackUrl: https://my-website/zbd-callback
+                  allowedSlots: 1000
+                  successMessage: Congratulations your payment was successful!
+                  status: active
+                  invoice:
+                    request: lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+                    uri: lightning:lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                minAmount:
+                  type: string
+                  description: Minimum allowed amount for the Static Charge -> in
+                    millisatoshis
+                maxAmount:
+                  type: string
+                  description: Maximum allowed amount for the Static Charge -> in
+                    millisatoshis
+                description:
+                  type: string
+                  description: Note or comment for this Static Charge (visible to
+                    payer)
+                successMessage:
+                  type: string
+                  description: Message displayed to the payer AFTER payment settles.
+                    Maximum of 144 characters.
+                allowedSlots:
+                  type: number
+                  description: Number of payments this Static Charge can accept
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+                identifier:
+                  type: string
+                  description: Used for Custom Lightning Addresses (see guide)
+            example:
+              minAmount: string
+              maxAmount: string
+              description: string
+              successMessage: string
+              allowedSlots: 123
+              internalId: string
+              callbackUrl: string
+              identifier: string
+      security:
+      - apikeyAuth: []
+  /v1/create-voucher:
+    post:
+      summary: Create Voucher
+      description: ''
+      operationId: post_v1_create-voucher
+      tags:
+      - Vouchers
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '1000'
+                  code: 7EE15185
+                  createdAt: '2023-08-24T15:01:56.408Z'
+                  createTransactionId: 0e11be7a-fd5e-48db-a0bb-54731681bc25
+                  description: Voucher for user.
+                  fee: '1000'
+                  id: a2eb43c4-af7f-4eb9-839c-ca31db34b3fc
+                  unit: msats
+                  walletId: 4a4bd549-297e-4e67-a594-386200e1bc21
+                message: Successfully created Voucher.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Charge -> in millisatoshis
+                description:
+                  type: string
+                  description: Note or comment for this Charge (visible to payer)
+            example:
+              amount: string
+              description: string
+      security:
+      - apikeyAuth: []
+  /v0/withdrawal-requests:
+    post:
+      summary: Create Withdrawal Request
+      description: Start creating Bitcoin voucher QR codes.
+      operationId: post_v0_withdrawal-requests
+      tags:
+      - Withdrawal Requests
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: e54e62d4-9cfa-495d-abb9-9c9f4bc4f2cf
+                  unit: msats
+                  amount: '15000'
+                  createdAt: '2023-04-27T22:15:54.258Z'
+                  expiresAt: '2023-04-27T22:20:54.252Z'
+                  internalId: 1c3b1-f61j2
+                  description: Withdraw QR!
+                  callbackUrl: https://your-website.com/zbd-callback
+                  status: pending
+                  fee: null
+                  invoice:
+                    request: lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7um9vdex2apax5exxwpjx9jx2wf4xajnxc3sx4jrwcenv56nwdm9vg6kxwtrx9sk2dtzvsunxce3vymkxef4vycxvwpexd3kxcmpxcmk2d3n8yenswqph63m6
+                    fastRequest: lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7arpvu7hw6t5dpj8ycth2fjhzat9wd6zv6e3856nycecxgckgefex5mk2vmzxq6kgdmrxdjn2dehv43r2ceevvckzef4vfjrjvmrx9snwcm9x4snqe3c8yekxcmrvymrwefkxvunxwpcyekkjmjhd96xserjv9mkzcnvv57nzdfsxqczvmtp0ptkjargv3exzampvfkx20f3x5crqvpxv3jkvct4d36ygetnvdexjur5d9hku02hd96xserjv9mjq52jyynxxctvd33xzcmt8458garswvaz7tmpwp5ju7n9vfjkget99e5k7tmkxqhhqun0vdjhxuedwa5hg6rywfshwctv94ex2ut4v4ehg5thy6x
+                    uri: lightning:lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7um9vdex2apax5exxwpjx9jx2wf4xajnxc3sx4jrwcenv56nwdm9vg6kxwtrx9sk2dtzvsunxce3vymkxef4vycxvwpexd3kxcmpxcmk2d3n8yenswqph63m6
+                    fastUri: lightning:lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7arpvu7hw6t5dpj8ycth2fjhzat9wd6zv6e3856nycecxgckgefex5mk2vmzxq6kgdmrxdjn2dehv43r2ceevvckzef4vfjrjvmrx9snwcm9x4snqe3c8yekxcmrvymrwefkxvunxwpcyekkjmjhd96xserjv9mkzcnvv57nzdfsxqczvmtp0ptkjargv3exzampvfkx20f3x5crqvpxv3jkvct4d36ygetnvdexjur5d9hku02hd96xserjv9mjq52jyynxxctvd33xzcmt8458garswvaz7tmpwp5ju7n9vfjkget99e5k7tmkxqhhqun0vdjhxuedwa5hg6rywfshwctv94ex2ut4v4ehg5thy6x
+                message: Successfully created Withdrawal Request.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Withdrawal Request -> in millisatoshis
+                description:
+                  type: string
+                  description: Note or comment for this Withdrawal Request
+                expiresIn:
+                  type: number
+                  description: Time until Withdrawal Request expiration -> in seconds
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+            example:
+              amount: string
+              description: string
+              expiresIn: 123
+              internalId: string
+              callbackUrl: string
+      security:
+      - apikeyAuth: []
+  /v0/decode-invoice:
+    post:
+      summary: Decode Charge
+      description: Understand the inner properties of a Charge QR code.
+      operationId: post_v0_decode-invoice
+      tags:
+      - Utilities
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '212325000'
+                  lnRequest: lnbc2123250n1pjpr2qmpp526234tljpx5756pa2fyj2zrdmn2tnz9rhj54km2s7dv0pap3vtkqhp5extcuyp2x0ydfwnfhrc5cwx8azxeen2g7hxr29464ezvn3k6w2fqcqzpgxqzjcsp5xzelh2w3twt4ysvva2ugu2klurmrl7nk8h46x2hcthf9cvee24jq9qyyssq6an9tjftjymjeklerjmw8cv4ccpsvd2vzuzxn5upt9s37hnw2r0z0n5cd8cqq8jq5ems00tugt5jnw5jn03tr84945nd6j4hsfsu7kqp9hptk2
+                  lnExpiresAt: '2023-03-15T11:22:27.000Z'
+                  network: bitcoin
+                  description: 'Paying for Master Sword #5546'
+                  descriptionHash: c9978e102a33c8d4ba69b8f14c38c7e88d9ccd48f5cc3516baae44c9c6da7292
+                  paymentHash: 56951aaff209a9ea683d524925086ddcd4b988a3bca95b6d50f358f0f43162ec
+                  paymentSecret: 30b3fba9d15b9752418ceab88e2adfe0f63ffa763deba32af85dd25c33395564
+                  payee: 036ff83834666d3ebfe61c2a7d1f8fc5d6b339a26559a61819e2b0d1b5f540fdfc
+                  signature: d76655c92b91372cdbf91cb6e3e195c60306354c170469d38159611f5e6e50de27ce9869f0001e40a67707bd7c42e929ba929be2b19ea5ad26dd4ab78261cf58
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invoice:
+                  type: string
+                  description: The Charge or Invoice QR code contents
+            example:
+              invoice: string
+      security:
+      - apikeyAuth: []
+  /v0/btcusd:
+    get:
+      summary: BTC USD Price Feed
+      description: Get the latest price for Bitcoin in US Dollars.
+      operationId: get_v0_btcusd
+      tags:
+      - Utilities
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  btcUsdPrice: '16825'
+                  btcUsdTimestamp: '1672847113'
+                message: Successfully retrieved BTC USD price ticker information.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/charges/{id}:
+    get:
+      summary: Get Charge
+      description: Retrieve all data about a single Charge.
+      operationId: get_v0_charges_id
+      tags:
+      - Lightning Charges
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                message: Successfully retrieved Charge.
+                data:
+                  unit: msats
+                  amount: '10000'
+                  confirmedAt: null
+                  status: pending
+                  description: My Charge Description
+                  createdAt: '2020-05-09T15:09:05.765Z'
+                  expiresAt: '2020-05-09T15:14:05.618Z'
+                  id: 1907b0fe-789b-4e25-b18a-0c4c0f5cced7
+                  internalId: 11af01d092444a317cb33faa6b8304b8
+                  callbackUrl: https://your-website.com/callback
+                  invoice:
+                    request: lnbc100n1p0td3u3pp5z2ed9yjfrz0rgu0fzuc5cdwfu8dtjlgrfztz5uga8hakkjy2yzgsdpzf4ujqsmgv9exwefqg3jhxcmjd9c8g6t0dccqzpgxqzfvsp5q8z5mkghmuzrnusxdwtmls7x8vuy63j25rt4z55gj3s7340dv72q9qy9qsqz02rlmlzcvew3vk90c6l0369ewk7tkr2tx0yrk3qa235v07w6d3qeksk99wm7y8f8ug7zqy6yjudu4cs2f4umpey43cw7msyj7uqj2qq8x03te
+                    uri: lightning:lnbc100n1p0td3u3pp5z2ed9yjfrz0rgu0fzuc5cdwfu8dtjlgrfztz5uga8hakkjy2yzgsdpzf4ujqsmgv9exwefqg3jhxcmjd9c8g6t0dccqzpgxqzfvsp5q8z5mkghmuzrnusxdwtmls7x8vuy63j25rt4z55gj3s7340dv72q9qy9qsqz02rlmlzcvew3vk90c6l0369ewk7tkr2tx0yrk3qa235v07w6d3qeksk99wm7y8f8ug7zqy6yjudu4cs2f4umpey43cw7msyj7uqj2qq8x03te
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/gamertag/user-id/{id}:
+    get:
+      summary: Get Gamertag By ZBD ID
+      description: Retrieve ZBD user ID from a Gamertag.
+      operationId: get_v0_gamertag_user-id_id
+      tags:
+      - ZBD Gamertag
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  gamertag: foxp2
+                message: Fetched gamertag from uuid
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/payments/{id}:
+    get:
+      summary: Get Payment
+      description: Retrieve all data about a single Payment.
+      operationId: get_v0_payments_id
+      tags:
+      - Lightning Payments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                message: Fetched Payment.
+                data:
+                  id: caafd318-527c-466b-81f2-441d3a092aae
+                  fee: '2000'
+                  unit: msats
+                  amount: '101000'
+                  invoice: lnbc1010n1p3mt8akpp5uyxhllflux2fvl36wjxh80wtqzdh2vjmu8cdyzuap578az80v74qdqcd3hzucmpwd5zqurp09kk2mn5cqzpgxqzjhsp550s770zy4puj76wqnua0hmym883gr07dhuast5ygcm44grl6z7ns9qyyssqgf7sumdmxwzgkq2m0h9lcv530sqs0m4t4shlu98djrrckrtulcmr8rear70dyftdm67jvgncxgz4jmd6ksx87jvnj88e39un48ssk4gp8vs4u5
+                  preimage: 8a14f6da89d4a8ffd09677f585b7c377de72744b7c3713d3c115fa71ca4fc290
+                  internalId: 11af01d092444a317cb33faa6b8304b8
+                  processedAt: '2023-01-04T15:48:29.805Z'
+                  confirmedAt: '2023-01-04T15:48:29.805Z'
+                  description: Custom Payment Description
+                  status: completed
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/gamertag/transaction/{id}:
+    get:
+      summary: Get Payment
+      description: Retrieve all data about a Payment sent to ZBD User.
+      operationId: get_v0_gamertag_transaction_id
+      tags:
+      - ZBD Gamertag
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Fetched charge.
+                success: true
+                data:
+                  id: 903883f2-67d9-4707-a21b-ddff004fe041
+                  receiverId: ec9b38d5-b126-4307-9d1e-8aa0dfab5d7e
+                  amount: '15000'
+                  fee: '1000'
+                  unit: msats
+                  processedAt: '2023-01-04T15:59:16.993Z'
+                  confirmedAt: '2023-01-04T15:59:16.989Z'
+                  comment: Sending to ZBD Gamertag
+                  status: TRANSACTION_STATUS_COMPLETED
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/static-charges/{id}:
+    get:
+      summary: Get Static Charge
+      description: Retrieve all data about a single Static Charge.
+      operationId: get_v0_static-charges_id
+      tags:
+      - Lightning Charges
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Successfully fetched Static Charge.
+                data:
+                  id: 45c225b1-022b-4a37-98d6-5a5568f78d11
+                  unit: msats
+                  slots: 0
+                  minAmount: '10000'
+                  maxAmount: '100000'
+                  createdAt: '2023-03-07T20:07:06.910Z'
+                  expiresAt: null
+                  internalId: myInternalId
+                  description: This is my static charge
+                  callbackUrl: https://my-website/zbd-callback
+                  allowedSlots: 1000
+                  successMessage: Congratulations your payment was successful!
+                  status: active
+                  invoice:
+                    request: lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+                    uri: lightning:lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+    patch:
+      summary: Update Static Charge
+      description: Change the configuration of a Static Charge QR code.
+      operationId: patch_v0_static-charges_id
+      tags:
+      - Lightning Charges
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Successfully editted Static Charge.
+                data:
+                  id: 45c225b1-022b-4a37-98d6-5a5568f78d11
+                  unit: msats
+                  slots: 0
+                  minAmount: '10000'
+                  maxAmount: '100000'
+                  createdAt: '2023-03-07T20:07:06.910Z'
+                  expiresAt: null
+                  internalId: myInternalId
+                  description: This is my static charge
+                  callbackUrl: https://my-website/zbd-callback
+                  allowedSlots: 1000
+                  successMessage: Congratulations your payment was successful!
+                  status: active
+                  invoice:
+                    request: lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+                    uri: lightning:lnurl1dp68gurn8ghj7ctsdyh85etzv4jx2efwd9hj7a3s9aex2ut4v4ehgttnw3shg6tr943ksctjvajhxte5x43nyv34vgcj6vpjxf3z6drpxvmj6wfcvsmz6dtpx56nvwrxxuuxgvf3uzvpfy
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                minAmount:
+                  type: string
+                  description: Minimum allowed amount for the Static Charge -> in
+                    millisatoshis
+                maxAmount:
+                  type: string
+                  description: Maximum allowed amount for the Static Charge -> in
+                    millisatoshis
+                description:
+                  type: string
+                  description: Note or comment for this Static Charge (visible to
+                    payer)
+                successMessage:
+                  type: string
+                  description: Message displayed to the payer AFTER payment settles
+                allowedSlots:
+                  type: number
+                  description: Number of payments this Static Charge can accept
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+            example:
+              minAmount: string
+              maxAmount: string
+              description: string
+              successMessage: string
+              allowedSlots: 123
+              internalId: string
+              callbackUrl: string
+      security:
+      - apikeyAuth: []
+  /v0/user-id/gamertag/{gamertag}:
+    get:
+      summary: Get ID by ZBD Gamertag
+      description: Retrieve Gamertag from a ZBD user ID.
+      operationId: get_v0_user-id_gamertag_GAMERTAG
+      tags:
+      - ZBD Gamertag
+      parameters:
+      - name: gamertag
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: gamertag'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: 0a59bf56-daa3-4888-8330-cbc02eba3a6e
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/vouchers/{id}:
+    get:
+      summary: Get Voucher
+      description: ''
+      operationId: get_v0_vouchers_VOUCHER_ID
+      tags:
+      - Vouchers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '1000'
+                  code: 7EE15185
+                  createdAt: '2023-08-24T15:01:56.408Z'
+                  createTransactionId: 0e11be7a-fd5e-48db-a0bb-54731681bc25
+                  description: Voucher for user.
+                  id: a2eb43c4-af7f-4eb9-839c-ca31db34b3fc
+                  redeemedAt: null
+                  redeemedById: null
+                  redeemedTransactionId: null
+                  revokedAt: null
+                  revokedById: null
+                  revokedTransactionId: null
+                  updatedAt: null
+                  unit: msats
+                  walletId: 4a4bd549-297e-4e67-a594-386200e1bc21
+                message: Successfully retrieved Voucher.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/wallet:
+    get:
+      summary: Get Wallet
+      description: Retrieve all data about a ZBD Project's Wallet.
+      operationId: get_v0_wallet
+      tags:
+      - Wallet
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Successfully retrieved Wallet.
+                data:
+                  unit: msats
+                  balance: '384000'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/withdrawal-requests/{id}:
+    get:
+      summary: Get Withdrawal Request
+      description: Retrieve all data about a single Withdrawal Request.
+      operationId: get_v0_withdrawal-requests_id
+      tags:
+      - Withdrawal Requests
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: id'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                message: Successfully retrieved Withdrawal Request.
+                data:
+                  unit: msats
+                  amount: '12000'
+                  status: pending
+                  createdAt: '2020-05-09T15:15:30.222Z'
+                  expiresAt: '2020-05-09T15:20:30.212Z'
+                  description: My Withdrawal Description
+                  id: 243ee7f6-a91b-4644-aa5f-ecc9c9fdd351
+                  internalId: 11af01d092444a317cb33faa6b8304b8
+                  callbackUrl: https://your-website.com/zbd-callback
+                  invoice:
+                    request: lnurl1dp68gurn8ghj7er9wch85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7um9vdex2apaxfsnqvmz8pjx2ephxucnzdphxa3xzd3kvfjk2vnyxejnzdf3x93n2e3evesnsetyxsenzvesvdjrxdtrv9jxxdnzxaskxvm9vscrzeg58h24k
+                    fastRequest: lnurl1dp68gurn8ghj7er9wch85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7arpvu7hw6t5dpj8ycth2fjhzat9wd6zv6e385exzvpnvguxgetyxumnzvf5xumkycfkxe3x2efjvsmx2vf4xyckxdtx89nxzwr9vs6rxvfnxp3kgve4vdskgcekvgmkzcenv4jrqvt9yekkjmjhd96xserjv9mkzcnvv57nzv3sxqczvmtp0ptkjargv3exzampvfkx20f3xgcrqvpxv3jkvct4d36ygetnvdexjur5d9hku02d0ys9w6t5dpj8ycthv9kzq3r9wd3hy6tsw35k7m3xvdskcmrzv93kk0tgw368que69uhkgetk9eax2cn9v3jk2tnfduhhvvp0wpex7cm9wdej6amfw35xgunpwaskcttjv4ch2etnwsvtdjtq
+                    uri: lightning:lnurl1dp68gurn8ghj7er9wch85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7um9vdex2apaxfsnqvmz8pjx2ephxucnzdphxa3xzd3kvfjk2vnyxejnzdf3x93n2e3evesnsetyxsenzvesvdjrxdtrv9jxxdnzxaskxvm9vscrzeg58h24k
+                    fastUri: lightning:lnurl1dp68gurn8ghj7er9wch85etzv4jx2efwd9hj7a3s9acxz7tvdaskgtthd96xserjv9mkzmpdwfjhzat9wd6r7arpvu7hw6t5dpj8ycth2fjhzat9wd6zv6e385exzvpnvguxgetyxumnzvf5xumkycfkxe3x2efjvsmx2vf4xyckxdtx89nxzwr9vs6rxvfnxp3kgve4vdskgcekvgmkzcenv4jrqvt9yekkjmjhd96xserjv9mkzcnvv57nzv3sxqczvmtp0ptkjargv3exzampvfkx20f3xgcrqvpxv3jkvct4d36ygetnvdexjur5d9hku02d0ys9w6t5dpj8ycthv9kzq3r9wd3hy6tsw35k7m3xvdskcmrzv93kk0tgw368que69uhkgetk9eax2cn9v3jk2tnfduhhvvp0wpex7cm9wdej6amfw35xgunpwaskcttjv4ch2etnwsvtdjtq
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/prod-ips:
+    get:
+      summary: ZBD IP Address
+      description: Get the official IP addresses of ZBD servers.
+      operationId: get_v0_prod-ips
+      tags:
+      - Utilities
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  ips:
+                  - 3.225.112.64
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v0/is-supported-region/{ip}:
+    get:
+      summary: API Supported Regions
+      description: Verify if a user is coming from a supported region.
+      operationId: get_v0_is-supported-region_IP_ADDRESS
+      tags:
+      - Utilities
+      parameters:
+      - name: ip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: ip'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  ipAddress: 66.109.221.0
+                  isSupported: true
+                  ipCountry: US
+                  ipRegion: CO
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+  /v1/oauth2/authorize:
+    get:
+      summary: Authorization
+      description: Create an authorization URL for ZBD Login.
+      operationId: get_v1_oauth2_authorize
+      tags:
+      - OAuth2
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - OAuth2:
+        - read
+        - write
+  /v1/oauth2/token:
+    post:
+      summary: Refresh Token
+      description: Generate a new accessToken for a ZBD Login user.
+      operationId: post_v1_oauth2_token
+      tags:
+      - OAuth2
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - OAuth2:
+        - read
+        - write
+  /v1/oauth2/user:
+    get:
+      summary: Get User Data
+      description: Fetch user-related information about a logged-in ZBD User.
+      operationId: get_v1_oauth2_user
+      tags:
+      - OAuth2
+      parameters:
+      - name: usertoken
+        in: header
+        required: false
+        schema:
+          type: string
+        description: OAuth2 Access Token
+      - name: apikey
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ZBD API Key
+      responses:
+        '200':
+          description: Successful response
+          content: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - OAuth2:
+        - read
+        - write
+  /v1/oauth2/wallet:
+    get:
+      summary: Get Wallet Data
+      description: Fetch wallet-related information about a logged-in ZBD User.
+      operationId: get_v1_oauth2_wallet
+      tags:
+      - OAuth2
+      parameters:
+      - name: usertoken
+        in: header
+        required: false
+        schema:
+          type: string
+        description: OAuth2 Access Token
+      - name: apikey
+        in: header
+        required: true
+        schema:
+          type: string
+        description: ZBD API Key
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                data:
+                  balance: '98251000'
+                  remainingAmountLimits:
+                    daily: '1000000000'
+                    maxCredit: '4901749000'
+                    monthly: '25000000000'
+                    weekly: '5000000000'
+                message: Successfully fetched user wallet.
+                success: true
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - OAuth2:
+        - read
+        - write
+  /v0/redeem-voucher:
+    post:
+      summary: Redeem Voucher
+      description: ''
+      operationId: post_v0_redeem-voucher
+      tags:
+      - Vouchers
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '1000'
+                  code: 7EE15185
+                  createdAt: '2023-08-24T15:01:56.408Z'
+                  description: Voucher for user.
+                  id: a2eb43c4-af7f-4eb9-839c-ca31db34b3fc
+                  redeemedAt: '2023-08-24T15:03:43.333Z'
+                  redeemedById: 4a4bd549-297e-4e67-a594-386200e1bc21
+                  redeemedTransactionId: 656695f9-36e3-4b9c-abfa-8c2e90f61b45
+                  revokedAt: null
+                  revokedById: null
+                  revokedTransactionId: null
+                  unit: msats
+                message: Successfully redeemed Voucher.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Valid 8-digit ZBD Voucher Code
+            example:
+              code: string
+      security:
+      - apikeyAuth: []
+  /v0/revoke-voucher:
+    post:
+      summary: Revoke Voucher
+      description: ''
+      operationId: post_v0_revoke-voucher
+      tags:
+      - Vouchers
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '1000'
+                  code: E044A15A
+                  createdAt: '2023-08-24T15:04:19.927Z'
+                  description: Voucher for user.
+                  id: 8703d5da-6b38-499f-b543-c6e73543b371
+                  redeemedAt: null
+                  redeemedById: null
+                  redeemedTransactionId: null
+                  revokedAt: '2023-08-24T15:04:41.196Z'
+                  revokedById: 4a4bd549-297e-4e67-a594-386200e1bc21
+                  revokedTransactionId: 34f5abab-3f36-4fb3-b25a-4d54b0ad0924
+                  unit: msats
+                message: Successfully revoked Voucher.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                  description: Valid 8-digit ZBD Voucher Code
+            example:
+              code: string
+      security:
+      - apikeyAuth: []
+  /v0/keysend-payment:
+    post:
+      summary: Send Keysend Payment
+      description: Start sending Keysend payments on the Lightning Network.
+      operationId: post_v0_keysend-payment
+      tags:
+      - Keysend Payments
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                message: Payment processing.
+                success: true
+                data:
+                  keysendId: 0d54521c-f41c-4cec-8799-edf9d87cf6b5
+                  paymentId: 276e6f54-65fb-4c30-9b86-b44659015cd6
+                  transaction:
+                    id: a51bd8d3-1d65-4785-bfd2-3341dc696f84
+                    walletId: cce98a9b-c52a-427c-8cf5-d7ca39c5035e
+                    type: KEYSEND_PAYMENT
+                    totalAmount: '3000'
+                    fee: '2000'
+                    amount: '1000'
+                    description: Keysend Payment
+                    status: TRANSACTION_STATUS_PROCESSING
+                    confirmedAt: null
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Payment -> in millisatoshis
+                pubkey:
+                  type: string
+                  description: The Public Key for the destination Lightning node
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Keysend Payment updates
+                    to
+                metadata:
+                  type: object
+                  description: Open metadata object property
+                tlvRecords:
+                  type: array
+                  description: "List of TLV records\n  <Expandable title=\"tlvRecord\"\
+                    \ defaultOpen>\n    <ParamField body=\"type\" type=\"number\"\
+                    \ initialValue={123456}>\n      type of the TLV record"
+                  items:
+                    type: string
+                value:
+                  type: string
+                  description: value of the TLV record (hex encoded string)
+            example:
+              amount: string
+              pubkey: string
+              callbackUrl: string
+              metadata: true
+              tlvRecords: true
+              value: myTLVRecordValue
+      security:
+      - apikeyAuth: []
+  /v0/payments:
+    post:
+      summary: Send Payment
+      description: Start sending instant Bitcoin payments through the ZBD API.
+      operationId: post_v0_payments
+      tags:
+      - Lightning Payments
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invoice:
+                  type: string
+                  description: Lightning Network Payment Request / Charge
+                description:
+                  type: string
+                  description: Note or comment for this Payment
+                amount:
+                  type: string
+                  description: Amount to be paid to this Charge/Invoice -> in millisatoshis
+                    *(only valid if Amountless Invoice)*
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Payment updates to
+            example:
+              invoice: string
+              description: string
+              amount: string
+              internalId: string
+              callbackUrl: string
+      security:
+      - apikeyAuth: []
+  /v0/email/send-payment:
+    post:
+      summary: Pay to Email
+      description: Send instant Bitcoin payments to any email.
+      operationId: post_v0_email_send-payment
+      tags:
+      - Email
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  amount: '1000'
+                  code: CB6A2DC5
+                  createdAt: '2023-08-29T22:07:25.736Z'
+                  createTransactionId: a3742c93-be3b-49aa-9414-79deb04137b9
+                  description: Sending to an email!
+                  fee: '1000'
+                  id: bdd0ee12-5231-4759-88aa-bb3634ed99e4
+                  unit: msats
+                  walletId: 0701cf1b-059b-4b88-854e-3362d9b96aab
+                message: Voucher was sent to email address.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: The Email of the intended recipient (e.g. info@zebedee.io)
+                amount:
+                  type: string
+                  description: The amount for the Payment -> in millisatoshis
+                comment:
+                  type: string
+                  description: Note / description of this Payment (may be shown to
+                    recipient)
+            example:
+              email: string
+              amount: string
+              comment: string
+      security:
+      - apikeyAuth: []
+  /v0/gamertag/send-payment:
+    post:
+      summary: Pay to ZBD Gamertag
+      description: Send instant Bitcoin payments to ZBD Users.
+      operationId: post_v0_gamertag_send-payment
+      tags:
+      - ZBD Gamertag
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: 49cccd62-b686-4057-9f44-f492bd54ac39
+                  status: settled
+                  transactionId: 78fb6474-d791-47a1-bda1-a4b9023898c0
+                  receiverId: ec9b38d5-b126-4307-9d1e-8aa0dfab5d7e
+                  amount: '1000'
+                  comment: Sent to ZBD Gamertag
+                  settledAt: '2023-07-19T21:42:54.993Z'
+                message: Payment done.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: string
+                  description: The amount for the Payment -> in millisatoshis
+                gamertag:
+                  type: string
+                  description: Destination ZBD Gamertag
+                description:
+                  type: string
+                  description: Note or comment for this Payment (visible to recipient)
+            example:
+              amount: string
+              gamertag: string
+              description: string
+      security:
+      - apikeyAuth: []
+  /v0/ln-address/send-payment:
+    post:
+      summary: Pay to Lightning Address
+      description: Send instant Bitcoin payments to any Lightning Address.
+      operationId: post_v0_ln-address_send-payment
+      tags:
+      - Lightning Address
+      parameters:
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Content Type
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: db3e9e98-82c6-4ad5-acb8-900212d352aa
+                  fee: '0'
+                  unit: msats
+                  amount: '10000'
+                  invoice: lnbc100n1p3mtx6gpp5qpc7qvapr475jjazwkves7t7qdyq5njym52z5r6mg0a9d79w783shp5xt5ts9t74akf67j59ynkr5qz8x3hs4g09d3dttmjrwwdhrxgc03qcqzpgxqzfvsp59uasmyhqwfuek2dwyfla6dn7la5wxkwzmlvvhcuptxdxsxs8d24q9qyyssqslvgpll5cwtcmhr0ch607gg463xc3s2g7mfww2dr3l0f29czt7eq03rylyg5g09qz0w97qv87mmmcyj0ytfahhzc6y79je5vsf67tgcp8248ez
+                  preimage: null
+                  walletId: 2e686eed-82c6-4722-95bd-de1b23f27d44
+                  transactionId: 2924bf31-96ba-4d26-80df-9e35c09a59cf
+                  callbackUrl: https://your-domain.com/zbd-callback
+                  internalId: uniqueIdFromYourSystem
+                  comment: Sending to a Lightning Address
+                  processedAt: '2023-01-04T15:29:12.577Z'
+                  createdAt: '2023-01-04T15:29:12.514Z'
+                  status: completed
+                message: Payment done.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lnAddress:
+                  type: string
+                  description: The Lightning Address of the intended recipient (e.g.
+                    andre@zbd.gg)
+                amount:
+                  type: string
+                  description: The amount for the Payment -> in millisatoshis
+                comment:
+                  type: string
+                  description: Note or description of this Payment
+                internalId:
+                  type: string
+                  description: Open metadata string property
+                callbackUrl:
+                  type: string
+                  description: The endpoint ZBD will POST Charge updates to
+            example:
+              lnAddress: string
+              amount: string
+              comment: string
+              internalId: string
+              callbackUrl: string
+      security:
+      - apikeyAuth: []
+  /v0/ln-address/validate/{address}:
+    get:
+      summary: Validate Lightning Address
+      description: Verify the validity of a Lightning Address.
+      operationId: get_v0_ln-address_validate_address
+      tags:
+      - Lightning Address
+      parameters:
+      - name: address
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 'Path parameter: address'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  valid: true
+                  metadata:
+                    minSendable: 10000
+                    maxSendable: 150000000
+                    commentAllowed: 150
+                    tag: payRequest
+                    metadata: '[["text/plain","andre - Welcome to ZBD! ;)"],["text/identifier","andre@zbd.gg"],["image/png;base64","/9j/2wBDAAYEBQ......IUeDcpP9akPkjm3XPid8/OmYZB//9k="]]'
+                    callback: https://api.zebedee.io/v0/process-static-charges/d0f2c3da-e836-480a-bf8c-f5d5b167d6f8
+                    payerData:
+                      name:
+                        mandatory: false
+                      identifier:
+                        mandatory: false
+                    disposable: false
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+      - apikeyAuth: []
+components:
+  securitySchemes:
+    apikeyAuth:
+      type: apiKey
+      name: apikey
+      in: header
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.zbd.dev/oauth2/authorize
+          tokenUrl: https://api.zbd.dev/oauth2/token
+          scopes:
+            read: Read access
+            write: Write access
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+tags:
+- name: Email
+  description: Email endpoints
+- name: Internal Transfers
+  description: Internal Transfers endpoints
+- name: Keysend Payments
+  description: Keysend Payments endpoints
+- name: Lightning Address
+  description: Lightning Address endpoints
+- name: Lightning Charges
+  description: Lightning Charges endpoints
+- name: Lightning Payments
+  description: Lightning Payments endpoints
+- name: OAuth2
+  description: OAuth2 endpoints
+- name: Utilities
+  description: Utilities endpoints
+- name: Vouchers
+  description: Vouchers endpoints
+- name: Wallet
+  description: Wallet endpoints
+- name: Withdrawal Requests
+  description: Withdrawal Requests endpoints
+- name: ZBD Gamertag
+  description: ZBD Gamertag endpoints
+externalDocs:
+  description: Full developer guide
+  url: https://zbd.dev
